@@ -32,9 +32,9 @@ class Database(object):
 
         # Continue with init exactly once.
         self.data_version = '1.0'
-        self.database_name = 'accounting.db'
-        self.db_create_file = 'database.sql'
-        self.db_pop_file = 'populate.sql'
+        self.database_name = 'sql/accounting.db'
+        self.db_create_file = 'sql/database.sql'
+        self.db_pop_file = 'sql/populate.sql'
         self.open()
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 

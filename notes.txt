@@ -27,6 +27,8 @@ TODO:
 * Select sales or purchases based on the customer/vendor name. Select dialog
   needs to show if there are uncommitted transactions for that entity.
 * Select sales and vendors based on whether they have uncommitted transactions.
+* Add better directory and discovery for the SQL init routines.
+* Add user land configuration file to the user's home directory.
 
 
 Reports needed:
