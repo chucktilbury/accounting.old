@@ -1,0 +1,15 @@
+
+When a sale or purchase is committed, then the accounts are updated.
+
+Inventory is automatically updated when a sale is made. (TODO)
+
+Reports needed:
+* uncommitted sales and purchases
+* outstanding sales that are not complete
+* balance sheet, etc
+Move these to menu items with their own dialogs?
+
+Put new sales and purchases in the menu, rather than trying to code up
+new forms?
+
+Add progress dialogs for database stuff.
