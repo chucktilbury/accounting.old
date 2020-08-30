@@ -1,4 +1,5 @@
 from forms import Form
+from logger import *
 
 
 #
@@ -7,6 +8,7 @@ from forms import Form
 #
 #       Show total committed and uncommitted sales for customer.
 #
+@class_wrapper
 class CustomersForm(Form):
 
     def __init__(self, notebook):
@@ -56,6 +58,7 @@ class CustomersForm(Form):
 #
 #       Show total committed and uncommitted purchases for vendor
 #
+@class_wrapper
 class VendorsForm(Form):
 
     def __init__(self, notebook):
@@ -104,6 +107,7 @@ class VendorsForm(Form):
 #       Sales and purchases need to show if they have been committed. When the commit
 #       button is pressed, then the accounts are debited.
 #
+@class_wrapper
 class sSalesForm(Form):
 
     def __init__(self, notebook):
@@ -131,6 +135,7 @@ class sSalesForm(Form):
         self.add_button_spacer()
         self.add_edit_button('Edit Notes', 'notes', 'Notes')
 
+@class_wrapper
 class sPurchaseForm(Form):
 
     def __init__(self, notebook):

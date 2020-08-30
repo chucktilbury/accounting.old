@@ -2,9 +2,11 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.messagebox import showerror, askyesno
 from database import Database
+from logger import *
 
 
 # see: https://effbot.org/tkinterbook/tkinter-dialog-windows.htm
+@class_wrapper
 class BaseDialog(tk.Toplevel):
     '''
     This class provides common services to simple data dialogs.
@@ -14,6 +16,7 @@ class BaseDialog(tk.Toplevel):
 
         tk.Toplevel.__init__(self, parent)
         self.transient(parent)
+        self.logger.set_level(Logger.DEBUG)
 
         self.parent = parent
 
@@ -84,6 +87,7 @@ class BaseDialog(tk.Toplevel):
         pass # override
 
 
+@class_wrapper
 class SelectItem(BaseDialog):
     '''
     Create a list of items called 'name' from a table and return the database
@@ -92,6 +96,7 @@ class SelectItem(BaseDialog):
 
     def __init__(self, master, table, column, thing=None):
 
+        self.logger.set_level(Logger.DEBUG)
         self.table = table
         self.column = column
         if thing is None:
@@ -103,6 +108,7 @@ class SelectItem(BaseDialog):
         super().__init__(master)
         #self.wait_window(self)
 
+    @func_wrapper
     def body(self, master):
         self.title("Select %s"%(self.thing))
         self.data = Database.get_instance()
@@ -130,15 +136,18 @@ class SelectItem(BaseDialog):
             showerror("ERROR", "No records are available to select for this table.")
             self.cancel()
 
+    @func_wrapper
     def apply(self):
         ''' Populate the form with the selected data. '''
         id = self.data.get_id_by_name(self.table, self.column, self.cbb.get())
         self.item_id = id
 
+@class_wrapper
 class EditDialog(BaseDialog):
 
     def __init__(self, master, table, column, row_id, thing=None):
 
+        self.logger.set_level(Logger.DEBUG)
         self.row_id = row_id
         self.table = table
         self.column = column
@@ -150,6 +159,7 @@ class EditDialog(BaseDialog):
         super().__init__(master)
         #self.wait_window(self)
 
+    @func_wrapper
     def body(self, master):
         self.title("Edit %s"%(self.thing))
         self.data = Database.get_instance()
@@ -184,6 +194,7 @@ class EditDialog(BaseDialog):
         if not value is None:
             self.widget.insert(tk.END, str(value))
 
+    @func_wrapper
     def apply(self):
         '''
         Save the text to the database as a single item.
@@ -196,6 +207,7 @@ class EditDialog(BaseDialog):
 
 ###############################################################################
 # Does not use BaseDialog
+@class_wrapper
 class HelpDialog:
 
     help_text = """

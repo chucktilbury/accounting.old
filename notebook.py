@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from logger import *
 
+@class_wrapper
 class Notebook(tk.Frame):
     '''
     Notebook widget
@@ -31,6 +33,7 @@ class Notebook(tk.Frame):
 
         self.grid()
 
+    @func_wrapper
     def add_tab(self, name, show_cb=None, hide_cb=None):
         '''
         Add a tab to the notebook with the specified name. Creates a frame for the
@@ -48,6 +51,7 @@ class Notebook(tk.Frame):
                                 'hide_cb':hide_cb})
         self.frame_index += 1
 
+    @func_wrapper
     def show_tab(self, index):
         '''
         Hide the previously displayed tab and replace it with the new one.
@@ -64,12 +68,14 @@ class Notebook(tk.Frame):
 
         self.crnt_index = index
 
+    @func_wrapper
     def get_frame(self, index):
         '''
         Return the frame of the tab at the index.
         '''
         return self.frame_list[index]['frame']
 
+    @func_wrapper
     def get_tab_index(self, name):
         '''
         Return the index of a tab given the name.

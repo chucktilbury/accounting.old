@@ -2,7 +2,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.messagebox import showerror, showinfo, askyesno
 from database import Database
+from logger import *
 
+@class_wrapper
 class FormWidgetBase(tk.Frame):
     '''
     Common methods and data for form widgets.
@@ -27,18 +29,21 @@ class FormWidgetBase(tk.Frame):
         self.label = None
         self.row_id = -1
 
+    @func_wrapper
     def set_row_id(self, id):
         '''
         Set the current row ID so that the value can be seen in the database.
         '''
         self.row_id = id
 
+    @func_wrapper
     def getter(self):
         '''
         Read the value of the widget and save it to the database.
         '''
         pass
 
+    @func_wrapper
     def setter(self):
         '''
         Read the value from the database and place it into the widget.
@@ -46,12 +51,14 @@ class FormWidgetBase(tk.Frame):
         self.clear()
         pass
 
+    @func_wrapper
     def clear(self):
         '''
         Clear the value of the widget or reset it to the default value.
         '''
         pass
 
+    @func_wrapper
     def populate(self):
         '''
         This method populates widgets that have an ID as their data.
@@ -59,6 +66,7 @@ class FormWidgetBase(tk.Frame):
         pass
 
 
+@class_wrapper
 class FormTitle(FormWidgetBase):
 
     def __init__(self, owner, label, **kw):
@@ -75,6 +83,7 @@ class FormTitle(FormWidgetBase):
         self.widget = tk.Label(self, text=self.label, font=("Helvetica", 14), **kw)
         self.widget.grid()
 
+@class_wrapper
 class FormEntry(FormWidgetBase):
 
     def __init__(self, owner, label, table, column, _type, **kw):
@@ -103,10 +112,12 @@ class FormEntry(FormWidgetBase):
         self.widget = tk.Entry(self, textvariable=self.strvar, **kw)
         self.widget.grid(row=0, column=1, sticky='w', padx=self.padx, pady=self.pady)
 
+    @func_wrapper
     def getter(self):
         value = self._type(self.strvar.get())
         self.data.set_single_value(self.table, self.column, self.row_id, value)
 
+    @func_wrapper
     def setter(self):
         state = self.widget.configure()['state']
         if state == 'readonly':
@@ -118,6 +129,7 @@ class FormEntry(FormWidgetBase):
         if state == 'readonly':
             self.widget.configure(state='readonly')
 
+    @func_wrapper
     def clear(self):
         '''
         Clear the value of the widget.
@@ -131,6 +143,7 @@ class FormEntry(FormWidgetBase):
         if state == 'readonly':
             self.widget.configure(state='readonly')
 
+@class_wrapper
 class FormText(FormWidgetBase):
 
     def __init__(self, owner, label, table, column, **kw):
@@ -174,20 +187,24 @@ class FormText(FormWidgetBase):
         self.local_frame.grid(row=0, column=1, padx=self.padx, pady=self.pady, sticky='w')
         self.label.grid(row=0, column=0, padx=self.padx, pady=self.pady, sticky='e')
 
+    @func_wrapper
     def getter(self):
         value = self.widget.get(1.0, tk.END)
         self.data.set_single_value(self.table, self.column, self.row_id, value)
 
+    @func_wrapper
     def setter(self):
         value = self.data.get_single_value(self.table, self.column, self.row_id)
         self.widget.delete('1.0', tk.END)
         if not value is None:
             self.widget.insert(tk.END, str(value))
 
+    @func_wrapper
     def clear(self):
         self.widget.delete('1.0', tk.END)
 
 
+@class_wrapper
 class FormCombo(FormWidgetBase):
     '''
     A combo box is populated from another table and the form table has the ID of the current
@@ -226,26 +243,31 @@ class FormCombo(FormWidgetBase):
         self.widget.grid(row=0, column=1)
         self.populate()
 
+    @func_wrapper
     def getter(self):
         if self.row_id != -1:
             value = self.widget.current()+1
             self.data.set_single_value(self.table, self.column, self.row_id, value)
 
+    @func_wrapper
     def setter(self):
         if self.row_id != -1:
             value = self.data.get_single_value(self.table, self.column, self.row_id)
             self.widget.current(int(value)-1)
         self.populate()
 
+    @func_wrapper
     def clear(self):
         try:
             self.widget.current(0)
         except tk.TclError:
             pass # empty content is not an error
 
+    @func_wrapper
     def populate(self):
         self.widget['values'] = self.data.populate_list(self.pop_table, self.pop_column)
 
+@class_wrapper
 class FormDynamicLabel(FormWidgetBase):
     '''
     A dynamic label is one where the table has the actual data to be displayed.
@@ -276,10 +298,12 @@ class FormDynamicLabel(FormWidgetBase):
         self.widget = tk.Label(self, textvariable=self.value, **kw)
         self.widget.grid(row=0, column=1, sticky='w')
 
+    @func_wrapper
     def setter(self):
         value = self.data.get_single_value(self.table, self.column, self.row_id)
         self.value.set(str(value))
 
+@class_wrapper
 class FormIndirectLabel(FormWidgetBase):
     '''
     An indirect label has an ID for the contents. The actual display content comes
@@ -315,6 +339,7 @@ class FormIndirectLabel(FormWidgetBase):
         self.widget = tk.Label(self, textvariable=self.value, **kw)
         self.widget.grid(row=0, column=1)
 
+    @func_wrapper
     def getter(self):
         # This is the name
         value = self.value.get()
@@ -323,6 +348,7 @@ class FormIndirectLabel(FormWidgetBase):
         # set the value with the row_id
         self.data.set_single_value(self.table, self.column, self.row_id, id)
 
+    @func_wrapper
     def setter(self):
         # this is the ID
         id = self.data.get_single_value(self.table, self.column, self.row_id)
@@ -331,6 +357,7 @@ class FormIndirectLabel(FormWidgetBase):
         # set the widget value
         self.value.set(str(value))
 
+    @func_wrapper
     def clear(self):
         self.value.set('')
 

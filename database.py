@@ -4,7 +4,9 @@ import time, locale
 import sqlite3 as sql
 import tkinter as tk
 from tkinter import messagebox as mbox
+from logger import *
 
+@class_wrapper
 class Database(object):
     '''
     The goal of this class is to move all SQL composition out of the program
@@ -37,7 +39,9 @@ class Database(object):
         self.db_pop_file = 'sql/populate.sql'
         self.open()
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        self.logger.set_level(Logger.INFO)
 
+    @func_wrapper
     def open(self):
 
         if not os.path.isfile(self.database_name):
@@ -46,10 +50,12 @@ class Database(object):
         self.db = sql.connect(self.database_name)
         self.db.row_factory = sql.Row
 
+    @func_wrapper
     def close(self):
         self.db.commit()
         self.db.close()
 
+    @func_wrapper
     def read_statement(self, fh):
         '''
         Read a statement from the *.sql file and return it. This skips comments and concatinates lines
@@ -70,6 +76,7 @@ class Database(object):
 
         return retv
 
+    @func_wrapper
     def run_file(self, db, name):
         '''
         Execute all of the statements in a *.sql file.
@@ -83,6 +90,7 @@ class Database(object):
                 else:
                     break
 
+    @func_wrapper
     def create_database(self):
         '''
         Create the database if it does not exist already.
@@ -96,6 +104,7 @@ class Database(object):
         c.commit()
         c.close()
 
+    @func_wrapper
     def get_columns(self, table):
         '''
         Return a dict where all column names are keys with blank data.
@@ -107,6 +116,7 @@ class Database(object):
             retv[item[1]] = ''
         return cols
 
+    @func_wrapper
     def get_column_list(self, table):
         '''
         Return a list with all of the column names.
@@ -117,18 +127,21 @@ class Database(object):
             retv.append(item[1])
         return retv
 
+    @func_wrapper
     def execute(self, sql):
         '''
         Execute an arbitrary SQL statement.
         '''
         return self.db.execute(sql)
 
+    @func_wrapper
     def commit(self):
         '''
         Commit the database to disk.
         '''
         self.db.commit()
 
+    @func_wrapper
     def populate_list(self, table, column):
         '''
         Return a list with all of the items then the column of the table.
@@ -140,6 +153,7 @@ class Database(object):
             #retv.append(item)
         return retv
 
+    @func_wrapper
     def get_row_by_id(self, table, ID):
         '''
         Return a dict of all of the columns in the row that has the specified ID.
@@ -151,6 +165,7 @@ class Database(object):
         except IndexError:
             return None
 
+    @func_wrapper
     def get_id_by_row(self, table, col, val):
         '''
         Return a dictionary of the columns in the row where a data element matches the value given.
@@ -166,12 +181,14 @@ class Database(object):
         else:
             return dict(row[0])['ID']
 
+    @func_wrapper
     def get_cursor(self):
         '''
         Return the current database cursor.
         '''
         return self.db.cursor()
 
+    @func_wrapper
     def get_id_list(self, table, where=None):
         '''
         Get a list of all of the IDs in the table
@@ -187,6 +204,7 @@ class Database(object):
 
         return retv
 
+    @func_wrapper
     def get_row_list(self, table, where):
         '''
         Get a generic list of rows based on more than one criteria
@@ -202,6 +220,7 @@ class Database(object):
         else:
             return retv
 
+    @func_wrapper
     def get_row_list_by_col(self, table, col, val):
         '''
         Get the list of all rows where the column has a certain value
@@ -221,6 +240,7 @@ class Database(object):
         else:
             return retv
 
+    @func_wrapper
     def get_id_by_name(self, table, col, val):
         '''
         Return the ID where the data in the column matches the value. Only returns the
@@ -241,6 +261,7 @@ class Database(object):
 
         return retv
 
+    @func_wrapper
     def get_single_value(self, table, col, row_id):
         '''
         Retrieve a single value where the table, column and row ID are known.
@@ -256,6 +277,7 @@ class Database(object):
 
         return retv
 
+    @func_wrapper
     def set_single_value(self, table, col, row_id, val):
         '''
         Retrieve a single value where the table, column and row ID are known.
@@ -265,6 +287,7 @@ class Database(object):
 
         return self.db.execute(sql, vals)
 
+    @func_wrapper
     def insert_row(self, table, rec):
         '''
         Insert a row from a dictionary. This expects a dictionary where the keys are the column names and
@@ -277,6 +300,7 @@ class Database(object):
         sql = 'INSERT INTO %s (%s) VALUES (%s);'%(table, keys, qmks)
         return self.db.execute(sql, vals).lastrowid
 
+    @func_wrapper
     def update_row(self, table, rec, where):
         '''
         Update a row from a dictionary. This expects a dictionary where the keys are the column names and
@@ -290,6 +314,7 @@ class Database(object):
         sql = 'UPDATE %s SET %s WHERE %s;'%(table, keys, where)
         return self.db.execute(sql, vals)
 
+    @func_wrapper
     def update_row_by_id(self, table, rec, id):
         '''
         Update a row using a dictionary and the id of the row. This expects a dictionary where the keys are
@@ -302,6 +327,7 @@ class Database(object):
         sql = 'UPDATE %s SET %s WHERE ID = %d;'%(table, keys, id)
         return self.db.execute(sql, vals)
 
+    @func_wrapper
     def delete_row(self, table, id):
         '''
         Delete the row given by the ID
@@ -309,6 +335,7 @@ class Database(object):
         sql = 'DELETE FROM %s WHERE ID = %d;' % (table, id)
         return self.db.execute(sql)
 
+    @func_wrapper
     def delete_where(self, table, where):
         '''
         Delete rows that conform to the "where" clause.
@@ -316,6 +343,7 @@ class Database(object):
         sql = 'DELETE FROM %s WHERE %s;' % (table, where)
         return self.db.execute(sql)
 
+    @func_wrapper
     def if_rec_exists(self, table, column, value):
         '''
         Return True if there is a row that has the column with the value
@@ -330,6 +358,7 @@ class Database(object):
 
         return True
 
+    @func_wrapper
     def convert_value(self, val, value_type, abs_val=True):
         '''
         Convert the value to the specified type. The value_type is an actual python type name.

@@ -5,11 +5,13 @@ from tkinter.messagebox import showerror, showinfo, askyesno
 from database import Database
 from form_widgets import *
 from dialogs import *
+from logger import *
 
 #
 # TODO: Add a validation such that required fields are not blank, numbers are numbers, etc.
 #
 
+@class_wrapper
 class Form(tk.Frame):
     '''
     Create a form widget that has all of the controls and infrastructure to
@@ -92,6 +94,7 @@ class Form(tk.Frame):
         self.ctl_list = []
         self.grid()
 
+    @func_wrapper
     def add_title(self, text):
         '''
         Add a static label to the form.
@@ -103,6 +106,7 @@ class Form(tk.Frame):
         self.row += 1
         self.ctl_list.append(ctrl)
 
+    @func_wrapper
     def add_entry(self, label, column, cols, _type, **kw):
         '''
         Add an entry control to the form. The value from this control is cast
@@ -118,6 +122,7 @@ class Form(tk.Frame):
         self._grid(ctrl, cols)
         self.ctl_list.append(ctrl)
 
+    @func_wrapper
     def add_combo(self, label, column, cols, pop_tab, pop_col, **kw):
         '''
         Add a combo box entry to the form. The values for the combo box are located
@@ -136,6 +141,7 @@ class Form(tk.Frame):
         self.ctl_list.append(ctrl)
 
 
+    @func_wrapper
     def add_text(self, label, column, cols, **kw):
         '''
         Add a multi-line text control to the form.
@@ -149,6 +155,7 @@ class Form(tk.Frame):
         self._grid(ctrl, cols)
         self.ctl_list.append(ctrl)
 
+    @func_wrapper
     def add_indirect_label(self, label, column, cols, pop_tab, pop_col, **kw):
         '''
         Add a dynamic label to the form. The database column for this control contains
@@ -165,6 +172,7 @@ class Form(tk.Frame):
         self._grid(ctrl, cols)
         self.ctl_list.append(ctrl)
 
+    @func_wrapper
     def add_dynamic_label(self, label, column, cols, **kw):
         '''
         Add a label where the form table has the actual data to display.
@@ -178,6 +186,7 @@ class Form(tk.Frame):
         self._grid(ctrl, cols)
         self.ctl_list.append(ctrl)
 
+    @func_wrapper
     def add_spacer(self, cols):
         '''
         This adds an invisible spacer into the control frame.
@@ -185,6 +194,7 @@ class Form(tk.Frame):
         frame = tk.Frame(self.ctl_frame)
         self._grid(frame, cols)
 
+    @func_wrapper
     def add_std_button(self, name, column=None, command=None, **kw):
         '''
         Add a button control to the button panel of the form.
@@ -216,6 +226,7 @@ class Form(tk.Frame):
         ctrl.grid(row=self.btn_row, column=0, sticky='nw')
         self.btn_row += 1
 
+    @func_wrapper
     def add_edit_button(self, name, column, thing, **kw):
         '''
         This button spawns a text dialog for editing text information.
@@ -238,6 +249,7 @@ class Form(tk.Frame):
         ctrl.grid(row=self.btn_row, column=0, sticky='nw')
         self.btn_row += 1
 
+    @func_wrapper
     def add_button_spacer(self):
         '''
         This adds an invisible spacer into the button frame.
@@ -246,6 +258,7 @@ class Form(tk.Frame):
         frame.grid(row=self.btn_row, column=0, sticky='nw', pady=5)
         self.btn_row += 1
 
+    @func_wrapper
     def load_form(self):
         '''
         Load the form from the database.
@@ -262,6 +275,7 @@ class Form(tk.Frame):
             geom = self._get_geometry(self.ctl_frame)
             self.canvas.configure(scrollregion=(0, 0, geom['width'], geom['height']))
 
+    @func_wrapper
     def save_form(self):
         '''
         Save the form to the database.
@@ -273,6 +287,7 @@ class Form(tk.Frame):
 
         self.data.commit()
 
+    @func_wrapper
     def _get_geometry(self, wid):
         '''
         Get the size and location of a widget.
@@ -282,6 +297,7 @@ class Form(tk.Frame):
                 'hoffset':wid.winfo_x(), 'voffset':wid.winfo_y(),
                 'name':wid.winfo_name()}
 
+    @func_wrapper
     def _get_width(self, cols):
         '''
         Calculate the actual width of the actual control, minus any padding and
@@ -292,6 +308,7 @@ class Form(tk.Frame):
             actual -= self.column_fudge     # This is a stupid fudge factor.
         return actual
 
+    @func_wrapper
     def _grid(self, ctrl, cols):
         '''
         Insert the control into the form grid according to the number of columns it
@@ -310,6 +327,7 @@ class Form(tk.Frame):
                 ctrl.grid(row=self.row, column=self.col, columnspan=cols)
                 self.col += 1
 
+    @func_wrapper
     def _edit_btn_command(self, table, column, row_id, thing):
         '''
         Display the dialog, then fill in the data from the database. React to
@@ -317,6 +335,7 @@ class Form(tk.Frame):
         '''
         EditDialog(self, table, column, row_id, thing)
 
+    @func_wrapper
     def _next_button(self):
         if not self.row_list is None:
             self.row_index += 1
@@ -326,6 +345,7 @@ class Form(tk.Frame):
             else:
                 self.load_form()
 
+    @func_wrapper
     def _prev_button(self):
         if not self.row_list is None:
             self.row_index -= 1
@@ -335,6 +355,7 @@ class Form(tk.Frame):
             else:
                 self.load_form()
 
+    @func_wrapper
     def _select_button(self, column):
         if not self.row_list is None:
             item = SelectItem(self, self.table, column)
@@ -342,14 +363,17 @@ class Form(tk.Frame):
                 self.row_index = self.row_list.index(item.item_id)
                 self.load_form()
 
+    @func_wrapper
     def _new_button(self):
         for item in self.ctl_list:
             item.clear()
 
+    @func_wrapper
     def _save_button(self):
         if askyesno('Save record?', 'Are you sure you want to save this?'):
             self.save_form()
 
+    @func_wrapper
     def _delete_button(self):
         if askyesno('Delete record?', 'Are you sure you want to delete this?'):
             self.data.delete_row(self.table, self.row_list[self.row_index])

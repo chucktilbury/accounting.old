@@ -1,5 +1,12 @@
 
+BUGS:
+* Prevent saving notes when there is no record to save it to. This currently
+  fails silently.
+
 TODO:
+* Add the application state to the database.
+  * records not saved
+  * current customer and vendor
 * When a sale or purchase is committed, then the accounts are updated.
 * Inventory is automatically updated when a sale is made. (TODO)
 * Put new sales and purchases in the menu, rather than trying to code up
@@ -30,7 +37,13 @@ TODO:
 * Add better directory and discovery for the SQL init routines.
 * Add user land configuration file to the user's home directory.
 * Move data directory to userland in home directory.
-
+* Add "search" functionality to C, V, S, and P form browsers.
+* Add "Actions" to menu.
+  * Create C, V, S, or P.
+  * Commit S or P.
+  * Close books.
+  * Spawn the database browser.
+* Create the exception classes for the app with logging and dialogs.
 
 Reports needed:
 * uncommitted sales and purchases
@@ -40,4 +53,9 @@ Reports needed:
 * vendor purchases
 Move these to menu items with their own dialogs?
 
-
+PLAN:
+* Create a form dialog.
+* Customers and Vendor forms in the notebook are browsers. If a C or V is to
+  be edited, then a separate dialog is displayed. Same with Sales and Purchase
+  forms.
+  3.a  Add "New" and "Edit" buttons.

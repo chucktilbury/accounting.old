@@ -2,8 +2,10 @@
 from tkinter.messagebox import showwarning, showerror, showinfo
 import sys, os, csv
 from database import Database
+from logger import *
 
 
+@class_wrapper
 class ImportPayPal(object):
     '''
     This class imports a PayPal CSV file into the database.
@@ -15,6 +17,7 @@ class ImportPayPal(object):
         self.data = Database.get_instance()
         self.accepted = 0
         self.rejected = 0
+        self.logger.set_level(Logger.DEBUG)
 
         self.legend = [
             'Date',
@@ -59,6 +62,7 @@ class ImportPayPal(object):
             'CountryCode',
             'BalanceImpact']
 
+    @func_wrapper
     def import_all(self):
         '''
         This is the top level interface for the importer. All of the other methods
@@ -88,6 +92,7 @@ class ImportPayPal(object):
         except Exception:
             showerror("ERROR", 'Could not import file: "%s"'%(self.fname))
 
+    @func_wrapper
     def _read_file(self):
         '''
         Read the CSV file into an array of lines where each one is a dictionary with the
@@ -125,6 +130,7 @@ class ImportPayPal(object):
 
             self.data.commit()
 
+    @func_wrapper
     def _countries(self):
         '''
         Read the new import and copy new country codes into the country codes table.
@@ -145,6 +151,7 @@ class ImportPayPal(object):
         self.data.commit()
         return count
 
+    @func_wrapper
     def _customers(self):
         '''
         Find all of the new customer records and copy the data into the customers table.
@@ -183,6 +190,7 @@ class ImportPayPal(object):
         self.data.commit()
         return count
 
+    @func_wrapper
     def _vendors(self):
         '''
         Find all of the new vendor records and copy the data into the vendor table.
@@ -214,6 +222,7 @@ class ImportPayPal(object):
         self.data.commit()
         return count
 
+    @func_wrapper
     def _sales(self):
         '''
         Find the sales records and copy the data into the sales database table.
@@ -244,6 +253,7 @@ class ImportPayPal(object):
         self.data.commit()
         return count
 
+    @func_wrapper
     def _purchases(self):
         '''
         Find all of the purchase records and copy the data into the purchase database table.
