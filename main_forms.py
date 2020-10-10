@@ -1,4 +1,4 @@
-from forms import Form
+from forms import NotebookForm
 from logger import *
 
 
@@ -9,7 +9,7 @@ from logger import *
 #       Show total committed and uncommitted sales for customer.
 #
 @class_wrapper
-class CustomersForm(Form):
+class CustomersForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Customers'), 'Customer')
@@ -59,7 +59,7 @@ class CustomersForm(Form):
 #       Show total committed and uncommitted purchases for vendor
 #
 @class_wrapper
-class VendorsForm(Form):
+class VendorsForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Vendors'), 'Vendor')
@@ -108,7 +108,7 @@ class VendorsForm(Form):
 #       button is pressed, then the accounts are debited.
 #
 @class_wrapper
-class sSalesForm(Form):
+class sSalesForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Sales'), 'SaleRecord')
@@ -136,7 +136,7 @@ class sSalesForm(Form):
         self.add_edit_button('Edit Notes', 'notes', 'Notes')
 
 @class_wrapper
-class sPurchaseForm(Form):
+class sPurchaseForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Purchases'), 'PurchaseRecord')

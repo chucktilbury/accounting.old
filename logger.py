@@ -73,6 +73,9 @@ class _logger(tk.Toplevel): #(tk.Frame):
         self.disable()
 
     def toggle(self):
+        '''
+        Toggle visibility.
+        '''
         if self.enabled:
             self.disable()
         else:

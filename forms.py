@@ -4,6 +4,7 @@ import tkinter.ttk as ttk
 from tkinter.messagebox import showerror, showinfo, askyesno
 from database import Database
 from form_widgets import *
+from form_dialog import *
 from dialogs import *
 from logger import *
 
@@ -18,7 +19,8 @@ class Form(tk.Frame):
     control it. All of these forms are imbedded in a notebook tab.
     '''
 
-    def __init__(self, notebook, index, table, scrolling=False, **kw):
+    #def __init__(self, notebook, index, table, scrolling=False, **kw):
+    def __init__(self, owner, table, scrolling=False, **kw):
         '''
         Create a form and provide infrastructiore to add and service different kinds of
         widgets in the form.
@@ -28,9 +30,10 @@ class Form(tk.Frame):
         table       =   Database table where most of the items in the form can be found.
         *kw         =   Named arguments passed to the frame of the form.
         '''
-        super().__init__(notebook.get_frame(index))#, **kw)
+        #super().__init__(notebook.get_frame(index))#, **kw)
+        #notebook.frame_list[index]['show_cb'] = self.load_form
+        super().__init__(owner)
 
-        notebook.frame_list[index]['show_cb'] = self.load_form
         self.scrolling = scrolling
 
         # create the button frame and place it
@@ -38,7 +41,7 @@ class Form(tk.Frame):
         self.btn_frame.grid(row=0, column=0, sticky='se')
 
         # create the widget frame and place it
-        if scrolling:
+        if self.scrolling:
             cframe = tk.LabelFrame(self)#, width=kw['width'], height=kw['height'])
             cframe.grid(row=0, column=1, sticky='nw')
             self.canvas = tk.Canvas(cframe, **kw)
@@ -61,6 +64,7 @@ class Form(tk.Frame):
         # get the database interface
         self.data = Database.get_instance()
         self.table = table
+        self.edit_class = None
 
         # Layout management.
         self.row = 0    # current row to place a widget into
@@ -215,6 +219,8 @@ class Form(tk.Frame):
                 command = self._save_button
             elif name == "Delete":
                 command = self._delete_button
+            elif name == "Edit":
+                command = lambda x=self.row_list[self.row_index]: self._edit_button(x)
             elif name == "Select":
                 if column is None:
                     raise Exception("Select button requires a column to be specified.")
@@ -225,6 +231,14 @@ class Form(tk.Frame):
         ctrl = tk.Button(self.btn_frame, text=name, command=command, width=self.btn_width, **kw)
         ctrl.grid(row=self.btn_row, column=0, sticky='nw')
         self.btn_row += 1
+
+    @func_wrapper
+    def set_edit_class(self, cls):
+        '''
+        Set the class to create when the edit button is pressed. This must be called when there
+        is an "Edit" button created.
+        '''
+        self.edit_class = cls
 
     @func_wrapper
     def add_edit_button(self, name, column, thing, **kw):
@@ -384,4 +398,28 @@ class Form(tk.Frame):
                 self.row_index -= 1
             self.load_form()
 
+    @func_wrapper
+    def _edit_button(self, row_id):
+        if self.edit_class is None:
+            showerror("Error", "There is no edit class set for the edit button")
+        else:
+            self.edit_class(self, row_id, self.table)
 
+@class_wrapper
+class NotebookForm(Form):
+
+    def __init__(self, notebook, index, table, scrolling=False, **kw):
+
+        super().__init__(notebook.get_frame(index), table, scrolling, **kw)
+        notebook.frame_list[index]['show_cb'] = self.load_form
+
+@class_wrapper
+class DialogForm(Form):
+
+    def __init__(self, owner, row_id, table, scrolling=False, **kw):
+
+        super().__init__(owner, table, scrolling, **kw)
+        self.form_dialog = FormDialog(owner)
+        self.form_dialog.load_form = self.load_form
+        self.form_dialog.save_form = self.save_form
+        self.row_id = row_id

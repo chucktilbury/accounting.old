@@ -1,8 +1,8 @@
-from forms import Form
+from forms import NotebookForm
 from logger import *
 
 @class_wrapper
-class BusinessForm(Form):
+class BusinessForm(NotebookForm):
     '''
     Create the form for the Business tab under Setup.
     '''
@@ -34,7 +34,7 @@ class BusinessForm(Form):
         self.add_edit_button('Edit Warranty', 'warranty', 'Warranty')
 
 @class_wrapper
-class AccountsForm(Form):
+class AccountsForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Accounts'), 'Account')
@@ -57,7 +57,7 @@ class AccountsForm(Form):
         self.add_edit_button('Edit Notes', 'notes', 'Notes')
 
 @class_wrapper
-class InventoryForm(Form):
+class InventoryForm(NotebookForm):
 
     def __init__(self, notebook):
         super().__init__(notebook, notebook.get_tab_index('Inventory'), 'InventoryItem')

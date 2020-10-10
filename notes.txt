@@ -44,6 +44,8 @@ TODO:
   * Close books.
   * Spawn the database browser.
 * Create the exception classes for the app with logging and dialogs.
+* Add validation to the forms.
+* Add logic to prompt for a save if the form has been changed.
 
 Reports needed:
 * uncommitted sales and purchases
